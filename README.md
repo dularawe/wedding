@@ -1,59 +1,43 @@
-# AR Wedding Invitation Kit (sample: Kasun & Nethmi)
+# AR Wedding Invitation: "Place Us Anywhere" (no printed card needed)
 
-A guest scans the QR code on the back of the card. A web page opens (no app needed).
-They point the phone at the **front** of the card, and the couple's video plays on top of it,
-with floating petals and buttons for Location, RSVP, WhatsApp, Sound and Replay.
+Guests open a link (sent on WhatsApp), tap **"See us in your room"** and point the phone at the
+floor or a table. A cute animated bride and groom appear under a flower arch, with floating hearts,
+twinkling sparkles and the couple's names on a banner. Guests can walk around, pinch to resize and
+take photos with them.
 
-## What's inside
-
+## Files
 | File | What it is |
 |---|---|
-| `index.html` | The AR page (camera + video on the card) |
-| `invite.html` | The invitation website with countdown and RSVP (the RSVP button opens this) |
-| `assets/targets.mind` | The "fingerprint" of the card front. The AR uses it to recognize the card |
-| `assets/target-image.jpg` | The image that `targets.mind` was made from |
-| `assets/video.mp4` | The video that plays on the card (sample; replace with the couple's) |
-| `assets/lib/` | AR libraries (A-Frame + MindAR). Don't change these |
-| `print/` | Print-ready card, 5 x 7 inch at 300 dpi (front, back and a 2-page PDF) |
+| `index.html` | The invitation page with the 3D couple and the AR button |
+| `invite.html` | The full invitation website with countdown and RSVP (the RSVP button opens it) |
+| `assets/couple.glb` | The animated 3D scene (couple + arch + hearts + banner) |
+| `assets/lib/model-viewer.min.js` | Google's free AR viewer. Don't change |
+| `source/` | The picture parts used to build the 3D scene |
 
-## Try it in 5 minutes (free)
+## Phone support
+| Phone | What happens |
+|---|---|
+| Android (Chrome) | Full AR with animation, placed on the floor or table |
+| iPhone (Safari) | Opens Apple's AR (Quick Look) and places the couple. It may show them **without the animation** |
+| Laptop | Shows the animated 3D preview with the message "open on your phone" |
 
-1. Go to **https://app.netlify.com/drop** and drag in this whole folder.
-2. Netlify gives you a link like `https://something.netlify.app`. Open it on your phone.
-   (Camera only works on **https** links, so opening the file directly on your phone won't work.)
-3. Open `print/card-front-5x7.png` on your laptop screen, or print it.
-4. On your phone tap **Start AR**, allow the camera and point it at the card.
+AR needs an **https** link. Opening the file directly won't start AR.
 
-## Making a card for a new customer
+## Try it now (free)
+1. Go to **https://app.netlify.com/drop** and drag in this folder.
+2. Open the link on an Android phone in Chrome, tap **See us in your room** and point at the floor.
 
-1. **Design the card front** in Canva (5 x 7 inch). Tips for good tracking:
-   - Use lots of detail: patterns, flowers, text, different shapes. **Avoid big plain areas.**
-   - Don't use a repeating pattern alone. Mix different elements.
-   - Use high contrast and print on **matte** paper. Shiny paper reflects light and breaks tracking.
-2. **Make the `.mind` file:** export the front as JPG (about 1000 px tall), then go to
-   **https://hiukim.github.io/mind-ar-js-doc/tools/compile**. Upload it, click Start
-   and download `targets.mind`. Replace `assets/targets.mind` with it.
-   The compiler also shows feature points. More points means better tracking.
-3. **Video:** replace `assets/video.mp4` with the couple's video, then:
-   - Make it **portrait, 5:7 shape** (for example 720 x 1008) so it fits the card exactly.
-   - Keep it **under 10 MB** and 15–40 seconds long (export at 720p in CapCut).
-4. **Edit `index.html`:** find `CONFIG` near the bottom and change the names, date,
-   Google Maps link and the couple's WhatsApp number.
-5. **Edit `invite.html`:** change the names, date, events and venue
-   (search for "Kasun", "Nethmi", "2027", "Grand Lotus").
-6. **Upload** to Netlify (free). In Netlify you can rename the site, for example
-   `kasun-nethmi.netlify.app`.
-7. **QR code:** make a QR for that link (free at qr-code-generator.com or in Canva),
-   and put it on the **back** of the card. Keep the QR at least 2.5 cm wide.
-8. **Test before printing!** Print one copy, scan it with an Android phone and an iPhone,
-   in normal room light.
+## For each new customer
+1. **Couple picture:** get a cartoon of the couple with a plain white background, ideally made
+   from their photo (many couples order a chibi cartoon). Make sure you have the right to use it.
+2. **Rebuild the 3D scene:** send me the new picture plus the names and date, and I'll make a
+   new `couple.glb` with the same animations. Or use a free tool like Blender for a fully custom one.
+3. **Edit `index.html`:** change `CONFIG` near the bottom (names, wedding time, map link,
+   WhatsApp number, calendar link) and the date/venue text in the page.
+4. **Edit `invite.html`:** change the names, date, events and venue.
+5. Upload to Netlify, rename the site (e.g. `kasun-nethmi.netlify.app`) and send the link on WhatsApp.
 
-## Notes
-
-- Works in Chrome (Android) and Safari (iPhone). Instagram's and Facebook's in-app browsers
-  sometimes block the camera. Tell guests to open the link in Chrome or Safari.
-- The QR on the sample card points to `https://kasun-nethmi.netlify.app/`, which is only an
-  example. Make a new QR for each real order.
-- The RSVP form in `invite.html` is a demo. It saves on the guest's phone only. For real orders,
-  connect it to a Google Form or Google Sheet, or use the WhatsApp button.
-- If a guest has no card with them, "Watch the video" on the start screen plays it normally.
+## Tips
+- Tell guests to open the link in **Chrome or Safari**, not inside Instagram/Facebook.
+- Works best in good light, on a floor or table with some texture (not a plain white or shiny surface).
+- Guests can take a screenshot with the couple and share it. That's free marketing for you.

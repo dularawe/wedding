@@ -2,202 +2,137 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#5a0d24">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffe4e8">
 <title>Kasun & Nethmi · AR Invitation</title>
+<meta property="og:title" content="Kasun & Nethmi are getting married!">
+<meta property="og:description" content="Open to see us in your room with AR · 20 March 2027">
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="assets/lib/aframe.min.js"></script>
-<script src="assets/lib/mindar-image-aframe.prod.js"></script>
+<script type="module" src="assets/lib/model-viewer.min.js"></script>
 <style>
-/* ============ EDIT FOR EACH COUPLE: see CONFIG in the script at the bottom ============ */
-:root{--ruby:#5a0d24;--ruby2:#8a1538;--gold:#e2bd6a;--cream:#fbeedd}
-*{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;background:transparent;font-family:Jost,system-ui,sans-serif;color:var(--cream)}
-#arWrap{position:fixed;inset:0;overflow:hidden;z-index:0}
-a-scene{position:absolute!important;inset:0;width:100%!important;height:100%!important}
-.layer{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px max(24px,env(safe-area-inset-left)) calc(24px + env(safe-area-inset-bottom))}
-.hidden{display:none!important}
-/* start screen */
-#start{background:radial-gradient(120% 80% at 50% 30%,#8a1538,#2e0512)}
-.seal{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;margin-bottom:22px;background:radial-gradient(circle at 35% 30%,#f4dc95,#a8781f 70%);box-shadow:0 12px 30px #0007,inset 0 -5px 10px #0003;color:var(--ruby);font:600 32px Jost;animation:float 3s ease-in-out infinite}
-@keyframes float{50%{transform:translateY(-8px)}}
-.names{font-family:"Great Vibes",cursive;font-size:clamp(52px,15vw,76px);line-height:1.05;color:var(--gold);margin:0}
-.when{margin:10px 0 30px;letter-spacing:.12em;font-size:14px;font-weight:500;opacity:.9}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:0 30px;border-radius:99px;border:0;background:linear-gradient(#f4dc95,#c8963a);color:#2a0a14;font:600 17px Jost,sans-serif;cursor:pointer;text-decoration:none;box-shadow:0 10px 24px #0005}
-.btn svg{width:22px;height:22px}
-.link{margin-top:18px;background:none;border:0;color:var(--cream);font:500 15px Jost;text-decoration:underline;text-underline-offset:4px;cursor:pointer;min-height:44px}
-.hint{max-width:300px;font-size:14px;opacity:.8;margin-top:22px;line-height:1.5}
-/* scanning overlay */
-#scan{pointer-events:none;background:transparent;justify-content:flex-end;padding-bottom:calc(120px + env(safe-area-inset-bottom))}
-.frame{position:absolute;top:50%;left:50%;width:min(62vw,300px);aspect-ratio:5/7;transform:translate(-50%,-56%)}
-.frame i{position:absolute;width:42px;height:42px;border:4px solid var(--gold);filter:drop-shadow(0 0 6px #0008)}
-.frame i:nth-child(1){top:0;left:0;border-right:0;border-bottom:0;border-radius:14px 0 0 0}
-.frame i:nth-child(2){top:0;right:0;border-left:0;border-bottom:0;border-radius:0 14px 0 0}
-.frame i:nth-child(3){bottom:0;left:0;border-right:0;border-top:0;border-radius:0 0 0 14px}
-.frame i:nth-child(4){bottom:0;right:0;border-left:0;border-top:0;border-radius:0 0 14px 0}
-.frame b{position:absolute;left:6%;right:6%;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:sweep 2.2s ease-in-out infinite;box-shadow:0 0 12px var(--gold)}
-@keyframes sweep{0%,100%{top:6%}50%{top:92%}}
-.pill{background:#000a;backdrop-filter:blur(8px);padding:12px 20px;border-radius:99px;font-size:15px;font-weight:500}
-/* loading */
-#load{background:#2e0512}
-.spin{width:46px;height:46px;border-radius:50%;border:4px solid #ffffff22;border-top-color:var(--gold);animation:r 1s linear infinite;margin-bottom:16px}
-@keyframes r{to{transform:rotate(360deg)}}
-/* action bar */
-#bar{position:fixed;z-index:20;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translate(-50%,140%);display:flex;gap:6px;padding:8px;border-radius:24px;background:#2e0512e6;backdrop-filter:blur(10px);border:1px solid #e2bd6a55;transition:transform .5s cubic-bezier(.2,.9,.3,1.2);max-width:calc(100vw - 20px)}
-#bar.show{transform:translate(-50%,0)}
-#bar a,#bar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:64px;min-height:58px;padding:6px 8px;border-radius:16px;border:0;background:none;color:var(--cream);font:500 12px Jost;text-decoration:none;cursor:pointer}
-#bar a:active,#bar button:active{background:#ffffff14}
-#bar svg{width:24px;height:24px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-/* fallback viewer */
-#viewer{background:#000e;z-index:30}
-#viewer video{max-width:100%;max-height:72vh;border-radius:18px;border:2px solid var(--gold);box-shadow:0 20px 50px #000}
-#err{background:#2e0512;z-index:40}
-#err p{max-width:320px;line-height:1.55}
-button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-@media(prefers-reduced-motion:reduce){.seal,.frame b,.spin{animation:none}}
+/* VOICE: cute, joyful, cartoon. IDEA: a pop-up storybook page — the couple is the picture.
+   COLOUR: blush pink ground, cocoa outlines, rose accent. TYPE: Great Vibes names, Jost text. */
+:root{--bg:#ffe4e8;--ink:#3b2318;--rose:#e0606e;--soft:#7a5a50;--card:#fffaf8}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 Jost,system-ui,sans-serif;overflow-x:clip;
+ background-image:radial-gradient(circle at 15% 10%,#fff6 0 60px,transparent 61px),radial-gradient(circle at 90% 30%,#fff5 0 90px,transparent 91px)}
+.wrap{max-width:560px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom))}
+.top{text-align:center}
+.top small{display:block;font-weight:500;color:var(--rose);font-size:15px}
+h1{font:400 clamp(48px,14vw,68px)/1 "Great Vibes",cursive;margin:4px 0 0}
+/* 3D stage */
+.stage{position:relative;margin:14px -6px 0;border:3px solid var(--ink);border-radius:28px;background:linear-gradient(#fff,#fff4f5);overflow:hidden;box-shadow:6px 6px 0 var(--ink)}
+model-viewer{width:100%;height:min(62vh,520px);--poster-color:transparent;--progress-bar-color:var(--rose);background:transparent}
+.ar-btn{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;min-height:54px;padding:0 24px;border-radius:99px;border:3px solid var(--ink);background:var(--rose);color:#fff;font:600 17px Jost,sans-serif;white-space:nowrap;box-shadow:3px 3px 0 var(--ink);cursor:pointer;animation:nudge 2.4s ease-in-out infinite}
+.ar-btn svg{width:24px;height:24px}
+@keyframes nudge{50%{transform:translate(-50%,-4px)}}
+.drag{position:absolute;top:12px;left:0;right:0;text-align:center;font-size:13px;color:var(--soft);pointer-events:none}
+.noar{position:absolute;left:12px;right:12px;bottom:14px;text-align:center;background:#fffd;border:2px solid var(--ink);border-radius:16px;padding:10px 12px;font-size:14px}
+.hint{text-align:center;color:var(--soft);font-size:14px;margin:14px 0 0}
+/* details */
+.when{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:22px 0 0}
+.when div{background:var(--card);border:2.5px solid var(--ink);border-radius:18px;padding:12px 6px;text-align:center}
+.when b{display:block;font-size:26px;line-height:1.1;font-weight:600;color:var(--rose)}
+.when span{font-size:13px;color:var(--soft)}
+.venue{margin:12px 0 0;background:var(--card);border:2.5px solid var(--ink);border-radius:18px;padding:14px 16px;display:flex;gap:12px;align-items:center}
+.venue svg{flex:none;width:36px;height:36px}
+.venue p{margin:0;font-size:15px}.venue strong{display:block;font-size:17px}
+.acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0 0}
+.acts a{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border-radius:16px;border:2.5px solid var(--ink);background:#fff;color:var(--ink);text-decoration:none;font-weight:600;box-shadow:3px 3px 0 var(--ink)}
+.acts a.main{background:var(--ink);color:#fff}
+.acts svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.acts a:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.count{text-align:center;margin:20px 0 0;font-weight:500}
+.count b{color:var(--rose);font-size:20px}
+footer{text-align:center;font-size:13px;color:var(--soft);margin-top:22px}
+a:focus-visible,button:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.ar-btn{animation:none}}
 </style>
 </head>
 <body>
+<main class="wrap">
+  <header class="top">
+    <small>You're invited to our wedding!</small>
+    <h1 id="names">Kasun &amp; Nethmi</h1>
+  </header>
 
-<!-- 1. Start screen -->
-<div id="start" class="layer">
-  <div class="seal" id="mono">K&N</div>
-  <h1 class="names" id="nm">Kasun &amp; Nethmi</h1>
-  <p class="when" id="wh">20 · 03 · 2027</p>
-  <button class="btn" id="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><circle cx="12" cy="12" r="3.5"/></svg>Start AR</button>
-  <p class="hint">Allow the camera, then point your phone at the front of your invitation card.</p>
-  <button class="link" id="noCard">No card with you? Watch the video</button>
-</div>
+  <section class="stage">
+    <model-viewer id="mv"
+      src="assets/couple.glb"
+      alt="Animated cartoon bride and groom under a flower arch"
+      autoplay animation-name="Celebrate"
+      camera-controls disable-zoom touch-action="pan-y"
+      camera-orbit="0deg 82deg 3.6m" min-camera-orbit="-35deg 60deg auto" max-camera-orbit="35deg 95deg auto"
+      camera-target="0m 0.95m 0m" field-of-view="38deg"
+      shadow-intensity="1" shadow-softness="0.8" exposure="1"
+      ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" ar-placement="floor"
+      interaction-prompt="none">
+      <button slot="ar-button" class="ar-btn" aria-label="View the couple in your room with AR">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        See us in your room
+      </button>
+    </model-viewer>
+    <div class="drag">Drag to look around</div>
+    <div class="noar" id="noar" hidden>Open this link on your <b>phone</b> to place us on your floor or table with AR.</div>
+  </section>
+  <p class="hint" id="hint">Tap the button, then point your camera at the floor or a table. Pinch to make us bigger or smaller.</p>
 
-<!-- 2. Loading -->
-<div id="load" class="layer hidden"><div class="spin"></div><div>Starting camera…</div></div>
+  <section class="when" aria-label="Date and time">
+    <div><b>20</b><span>March 2027</span></div>
+    <div><b>Sat</b><span>Saturday</span></div>
+    <div><b>9.15</b><span>morning</span></div>
+  </section>
+  <div class="venue">
+    <svg viewBox="0 0 24 24" fill="#e0606e" stroke="#3b2318" stroke-width="1.6"><path d="M12 22s-7-6.3-7-12a7 7 0 0 1 14 0c0 5.7-7 12-7 12z"/><circle cx="12" cy="10" r="2.6" fill="#fff"/></svg>
+    <p><strong>Grand Lotus Hall</strong>No. 12, Galle Road, Colombo 03</p>
+  </div>
+  <p class="count" id="count"></p>
 
-<!-- 3. Scanning guide -->
-<div id="scan" class="layer hidden"><div class="frame"><i></i><i></i><i></i><i></i><b></b></div><div class="pill">Point at the front of the card</div></div>
-
-<!-- 4. Action bar (appears when the card is found) -->
-<nav id="bar" aria-label="Invitation actions">
-  <a id="aMap" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Location</a>
-  <a id="aRsvp" href="invite.html#rsvp"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>RSVP</a>
-  <a id="aWa" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-13.4 7.9L3 21l1.2-4.4A9 9 0 1 1 21 12z"/></svg>WhatsApp</a>
-  <button id="bSound"><svg viewBox="0 0 24 24" id="icSound"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg><span>Sound</span></button>
-  <button id="bReplay"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Replay</button>
-</nav>
-
-<!-- 5. Fallback video viewer -->
-<div id="viewer" class="layer hidden">
-  <video id="vid2" playsinline controls></video>
-  <button class="link" id="closeV">Close</button>
-</div>
-
-<!-- 6. Camera error -->
-<div id="err" class="layer hidden">
-  <div class="seal">!</div>
-  <p>We couldn't open the camera. Please allow camera access in your browser settings and reload, or open this link in Chrome or Safari.</p>
-  <button class="btn" onclick="location.reload()">Try again</button>
-  <button class="link" id="noCam">Watch the video instead</button>
-</div>
-
-<div id="arWrap">
-<a-scene id="scene"
-  mindar-image="imageTargetSrc: assets/targets.mind; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 3; missTolerance: 8"
-  renderer="colorManagement: true; alpha: true"
-  vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" embedded>
-  <a-assets timeout="20000">
-    <video id="vid" src="assets/video.mp4" preload="auto" playsinline webkit-playsinline loop crossorigin="anonymous"></video>
-  </a-assets>
-  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-  <!-- The card is 1 unit wide and 1.4 tall (5 x 7 inch card) -->
-  <a-entity id="target" mindar-image-target="targetIndex: 0">
-    <a-entity id="pop" scale="0.001 0.001 0.001">
-      <a-plane width="1.06" height="1.46" position="0 0 0.005" material="shader: flat; color: #e2bd6a"></a-plane>
-      <a-plane width="1" height="1.4" position="0 0 0.01" material="shader: flat; src: #vid"></a-plane>
-      <a-entity id="petals" position="0 0 0.05"></a-entity>
-    </a-entity>
-  </a-entity>
-</a-scene>
-</div>
+  <nav class="acts" aria-label="Actions">
+    <a class="main" href="invite.html#rsvp"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>RSVP</a>
+    <a id="aMap" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Location</a>
+    <a id="aWa" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-13.4 7.9L3 21l1.2-4.4A9 9 0 1 1 21 12z"/></svg>WhatsApp</a>
+    <a id="aCal" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar</a>
+  </nav>
+  <footer>With love, Kasun &amp; Nethmi</footer>
+</main>
 
 <script>
 {
 /* ================= CONFIG: change these for each couple ================= */
 const CONFIG = {
-  mono: "K&N",
   names: "Kasun & Nethmi",
-  date: "20 · 03 · 2027",
+  weddingTime: "2027-03-20T09:15:00+05:30",
   mapUrl: "https://www.google.com/maps/search/?api=1&query=Galle+Road+Colombo+03",
-  whatsapp: "94771234567",          // couple's number, country code, no +
-  whatsappText: "Hi! We received your wedding invitation 💐"
+  whatsapp: "94771234567",
+  whatsappText: "Hi! We got your wedding invitation. Congratulations!",
+  calendarUrl: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Kasun+%26+Nethmi+Wedding&dates=20270320T034500Z/20270320T113000Z&location=Grand+Lotus+Hall,+Colombo+03"
 };
 /* ======================================================================== */
-
 const $ = id => document.getElementById(id);
-const vid = $("vid"), scene = $("scene"), pop = $("pop");
-$("mono").textContent = CONFIG.mono; $("nm").textContent = CONFIG.names; $("wh").textContent = CONFIG.date;
+$("names").textContent = CONFIG.names;
 $("aMap").href = CONFIG.mapUrl;
 $("aWa").href = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(CONFIG.whatsappText);
+$("aCal").href = CONFIG.calendarUrl;
 
-const show = (id, on) => $(id).classList.toggle("hidden", !on);
-let started = false, found = false;
-
-// floating petals that rise above the card
-{
-  const g = $("petals"), cols = ["#f2a7bc", "#f4dc95", "#e4708f", "#fff6e6"];
-  for (let i = 0; i < 16; i++) {
-    const x = (Math.random() - .5) * 1.2, y0 = -0.6 + Math.random() * .4, d = 3500 + Math.random() * 3000;
-    const e = document.createElement("a-circle");
-    e.setAttribute("radius", (0.018 + Math.random() * .02).toFixed(3));
-    e.setAttribute("material", `shader: flat; color: ${cols[i % 4]}; transparent: true; opacity: .9; side: double`);
-    e.setAttribute("position", `${x} ${y0} ${0.02 + Math.random() * .15}`);
-    e.setAttribute("animation__up", `property: position; to: ${x + (Math.random() - .5) * .3} ${1 + Math.random() * .4} ${0.1 + Math.random() * .3}; dur: ${d}; delay: ${Math.random() * 3000}; loop: true; easing: linear`);
-    e.setAttribute("animation__spin", `property: rotation; to: ${Math.random() * 360} 360 ${Math.random() * 360}; dur: ${d}; loop: true; easing: linear`);
-    g.appendChild(e);
-  }
+const target = new Date(CONFIG.weddingTime).getTime();
+function tick() {
+  const d = target - Date.now();
+  if (d <= 0) { $("count").innerHTML = "<b>Just married!</b>"; return; }
+  const days = Math.floor(d / 864e5), hrs = Math.floor(d / 36e5) % 24;
+  $("count").innerHTML = `Only <b>${days}</b> days and <b>${hrs}</b> hours to go`;
 }
+tick(); setInterval(tick, 60000);
 
-async function startAR() {
-  if (started) return; started = true;
-  // unlock video playback on iOS with the tap
-  try { vid.muted = false; await vid.play(); vid.pause(); vid.currentTime = 0; } catch (e) { vid.muted = true; }
-  show("start", false); show("load", true);
-  const sys = scene.systems["mindar-image-system"];
-  try { await sys.start(); } catch (e) { show("load", false); show("err", true); }
-}
-$("go").addEventListener("click", startAR);
-
-scene.addEventListener("arReady", () => { show("load", false); show("scan", true); });
-scene.addEventListener("arError", () => { show("load", false); show("err", true); });
-
-const target = $("target");
-target.addEventListener("targetFound", () => {
-  found = true; show("scan", false); $("bar").classList.add("show");
-  pop.removeAttribute("animation__in");
-  pop.setAttribute("animation__in", "property: scale; from: 0.001 0.001 0.001; to: 1 1 1; dur: 700; easing: easeOutBack");
-  vid.play().catch(() => { vid.muted = true; vid.play(); setSoundIcon(); });
-  if (navigator.vibrate) navigator.vibrate(40);
+const mv = $("mv");
+mv.addEventListener("load", () => {
+  mv.play({ repetitions: Infinity });
+  setTimeout(() => { if (!mv.canActivateAR) { $("noar").hidden = false; $("hint").hidden = true; } }, 600);
 });
-target.addEventListener("targetLost", () => {
-  found = false; vid.pause(); show("scan", true);
-  pop.setAttribute("scale", "0.001 0.001 0.001");
+mv.addEventListener("ar-status", e => {
+  if (e.detail.status === "failed") { $("hint").textContent = "AR couldn't start here. Try opening this link in Chrome (Android) or Safari (iPhone)."; $("hint").hidden = false; }
 });
-
-function setSoundIcon() {
-  $("bSound").querySelector("span").textContent = vid.muted ? "Muted" : "Sound";
-  $("bSound").style.opacity = vid.muted ? .6 : 1;
-}
-$("bSound").addEventListener("click", () => { vid.muted = !vid.muted; setSoundIcon(); });
-$("bReplay").addEventListener("click", () => { vid.currentTime = 0; if (found) vid.play(); });
-
-// fallback: just watch the video
-function openViewer() {
-  const v2 = $("vid2"); v2.src = "assets/video.mp4";
-  show("start", false); show("err", false); show("viewer", true); v2.play().catch(() => {});
-  $("bar").classList.add("show");
-}
-$("noCard").addEventListener("click", openViewer);
-$("noCam").addEventListener("click", openViewer);
-$("closeV").addEventListener("click", () => { $("vid2").pause(); show("viewer", false); $("bar").classList.remove("show"); show("start", true); started = false; });
 }
 </script>
 </body>
