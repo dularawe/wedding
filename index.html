@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5a0d24">
+<title>Kasun & Nethmi · AR Invitation</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="assets/lib/aframe.min.js"></script>
+<script src="assets/lib/mindar-image-aframe.prod.js"></script>
+<style>
+/* ============ EDIT FOR EACH COUPLE: see CONFIG in the script at the bottom ============ */
+:root{--ruby:#5a0d24;--ruby2:#8a1538;--gold:#e2bd6a;--cream:#fbeedd}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:transparent;font-family:Jost,system-ui,sans-serif;color:var(--cream)}
+#arWrap{position:fixed;inset:0;overflow:hidden;z-index:0}
+a-scene{position:absolute!important;inset:0;width:100%!important;height:100%!important}
+.layer{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px max(24px,env(safe-area-inset-left)) calc(24px + env(safe-area-inset-bottom))}
+.hidden{display:none!important}
+/* start screen */
+#start{background:radial-gradient(120% 80% at 50% 30%,#8a1538,#2e0512)}
+.seal{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;margin-bottom:22px;background:radial-gradient(circle at 35% 30%,#f4dc95,#a8781f 70%);box-shadow:0 12px 30px #0007,inset 0 -5px 10px #0003;color:var(--ruby);font:600 32px Jost;animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.names{font-family:"Great Vibes",cursive;font-size:clamp(52px,15vw,76px);line-height:1.05;color:var(--gold);margin:0}
+.when{margin:10px 0 30px;letter-spacing:.12em;font-size:14px;font-weight:500;opacity:.9}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:0 30px;border-radius:99px;border:0;background:linear-gradient(#f4dc95,#c8963a);color:#2a0a14;font:600 17px Jost,sans-serif;cursor:pointer;text-decoration:none;box-shadow:0 10px 24px #0005}
+.btn svg{width:22px;height:22px}
+.link{margin-top:18px;background:none;border:0;color:var(--cream);font:500 15px Jost;text-decoration:underline;text-underline-offset:4px;cursor:pointer;min-height:44px}
+.hint{max-width:300px;font-size:14px;opacity:.8;margin-top:22px;line-height:1.5}
+/* scanning overlay */
+#scan{pointer-events:none;background:transparent;justify-content:flex-end;padding-bottom:calc(120px + env(safe-area-inset-bottom))}
+.frame{position:absolute;top:50%;left:50%;width:min(62vw,300px);aspect-ratio:5/7;transform:translate(-50%,-56%)}
+.frame i{position:absolute;width:42px;height:42px;border:4px solid var(--gold);filter:drop-shadow(0 0 6px #0008)}
+.frame i:nth-child(1){top:0;left:0;border-right:0;border-bottom:0;border-radius:14px 0 0 0}
+.frame i:nth-child(2){top:0;right:0;border-left:0;border-bottom:0;border-radius:0 14px 0 0}
+.frame i:nth-child(3){bottom:0;left:0;border-right:0;border-top:0;border-radius:0 0 0 14px}
+.frame i:nth-child(4){bottom:0;right:0;border-left:0;border-top:0;border-radius:0 0 14px 0}
+.frame b{position:absolute;left:6%;right:6%;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:sweep 2.2s ease-in-out infinite;box-shadow:0 0 12px var(--gold)}
+@keyframes sweep{0%,100%{top:6%}50%{top:92%}}
+.pill{background:#000a;backdrop-filter:blur(8px);padding:12px 20px;border-radius:99px;font-size:15px;font-weight:500}
+/* loading */
+#load{background:#2e0512}
+.spin{width:46px;height:46px;border-radius:50%;border:4px solid #ffffff22;border-top-color:var(--gold);animation:r 1s linear infinite;margin-bottom:16px}
+@keyframes r{to{transform:rotate(360deg)}}
+/* action bar */
+#bar{position:fixed;z-index:20;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translate(-50%,140%);display:flex;gap:6px;padding:8px;border-radius:24px;background:#2e0512e6;backdrop-filter:blur(10px);border:1px solid #e2bd6a55;transition:transform .5s cubic-bezier(.2,.9,.3,1.2);max-width:calc(100vw - 20px)}
+#bar.show{transform:translate(-50%,0)}
+#bar a,#bar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:64px;min-height:58px;padding:6px 8px;border-radius:16px;border:0;background:none;color:var(--cream);font:500 12px Jost;text-decoration:none;cursor:pointer}
+#bar a:active,#bar button:active{background:#ffffff14}
+#bar svg{width:24px;height:24px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* fallback viewer */
+#viewer{background:#000e;z-index:30}
+#viewer video{max-width:100%;max-height:72vh;border-radius:18px;border:2px solid var(--gold);box-shadow:0 20px 50px #000}
+#err{background:#2e0512;z-index:40}
+#err p{max-width:320px;line-height:1.55}
+button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.seal,.frame b,.spin{animation:none}}
+</style>
+</head>
+<body>
+
+<!-- 1. Start screen -->
+<div id="start" class="layer">
+  <div class="seal" id="mono">K&N</div>
+  <h1 class="names" id="nm">Kasun &amp; Nethmi</h1>
+  <p class="when" id="wh">20 · 03 · 2027</p>
+  <button class="btn" id="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><circle cx="12" cy="12" r="3.5"/></svg>Start AR</button>
+  <p class="hint">Allow the camera, then point your phone at the front of your invitation card.</p>
+  <button class="link" id="noCard">No card with you? Watch the video</button>
+</div>
+
+<!-- 2. Loading -->
+<div id="load" class="layer hidden"><div class="spin"></div><div>Starting camera…</div></div>
+
+<!-- 3. Scanning guide -->
+<div id="scan" class="layer hidden"><div class="frame"><i></i><i></i><i></i><i></i><b></b></div><div class="pill">Point at the front of the card</div></div>
+
+<!-- 4. Action bar (appears when the card is found) -->
+<nav id="bar" aria-label="Invitation actions">
+  <a id="aMap" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Location</a>
+  <a id="aRsvp" href="invite.html#rsvp"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>RSVP</a>
+  <a id="aWa" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-13.4 7.9L3 21l1.2-4.4A9 9 0 1 1 21 12z"/></svg>WhatsApp</a>
+  <button id="bSound"><svg viewBox="0 0 24 24" id="icSound"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg><span>Sound</span></button>
+  <button id="bReplay"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Replay</button>
+</nav>
+
+<!-- 5. Fallback video viewer -->
+<div id="viewer" class="layer hidden">
+  <video id="vid2" playsinline controls></video>
+  <button class="link" id="closeV">Close</button>
+</div>
+
+<!-- 6. Camera error -->
+<div id="err" class="layer hidden">
+  <div class="seal">!</div>
+  <p>We couldn't open the camera. Please allow camera access in your browser settings and reload, or open this link in Chrome or Safari.</p>
+  <button class="btn" onclick="location.reload()">Try again</button>
+  <button class="link" id="noCam">Watch the video instead</button>
+</div>
+
+<div id="arWrap">
+<a-scene id="scene"
+  mindar-image="imageTargetSrc: assets/targets.mind; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 3; missTolerance: 8"
+  renderer="colorManagement: true; alpha: true"
+  vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" embedded>
+  <a-assets timeout="20000">
+    <video id="vid" src="assets/video.mp4" preload="auto" playsinline webkit-playsinline loop crossorigin="anonymous"></video>
+  </a-assets>
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+  <!-- The card is 1 unit wide and 1.4 tall (5 x 7 inch card) -->
+  <a-entity id="target" mindar-image-target="targetIndex: 0">
+    <a-entity id="pop" scale="0.001 0.001 0.001">
+      <a-plane width="1.06" height="1.46" position="0 0 0.005" material="shader: flat; color: #e2bd6a"></a-plane>
+      <a-plane width="1" height="1.4" position="0 0 0.01" material="shader: flat; src: #vid"></a-plane>
+      <a-entity id="petals" position="0 0 0.05"></a-entity>
+    </a-entity>
+  </a-entity>
+</a-scene>
+</div>
+
+<script>
+{
+/* ================= CONFIG: change these for each couple ================= */
+const CONFIG = {
+  mono: "K&N",
+  names: "Kasun & Nethmi",
+  date: "20 · 03 · 2027",
+  mapUrl: "https://www.google.com/maps/search/?api=1&query=Galle+Road+Colombo+03",
+  whatsapp: "94771234567",          // couple's number, country code, no +
+  whatsappText: "Hi! We received your wedding invitation 💐"
+};
+/* ======================================================================== */
+
+const $ = id => document.getElementById(id);
+const vid = $("vid"), scene = $("scene"), pop = $("pop");
+$("mono").textContent = CONFIG.mono; $("nm").textContent = CONFIG.names; $("wh").textContent = CONFIG.date;
+$("aMap").href = CONFIG.mapUrl;
+$("aWa").href = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(CONFIG.whatsappText);
+
+const show = (id, on) => $(id).classList.toggle("hidden", !on);
+let started = false, found = false;
+
+// floating petals that rise above the card
+{
+  const g = $("petals"), cols = ["#f2a7bc", "#f4dc95", "#e4708f", "#fff6e6"];
+  for (let i = 0; i < 16; i++) {
+    const x = (Math.random() - .5) * 1.2, y0 = -0.6 + Math.random() * .4, d = 3500 + Math.random() * 3000;
+    const e = document.createElement("a-circle");
+    e.setAttribute("radius", (0.018 + Math.random() * .02).toFixed(3));
+    e.setAttribute("material", `shader: flat; color: ${cols[i % 4]}; transparent: true; opacity: .9; side: double`);
+    e.setAttribute("position", `${x} ${y0} ${0.02 + Math.random() * .15}`);
+    e.setAttribute("animation__up", `property: position; to: ${x + (Math.random() - .5) * .3} ${1 + Math.random() * .4} ${0.1 + Math.random() * .3}; dur: ${d}; delay: ${Math.random() * 3000}; loop: true; easing: linear`);
+    e.setAttribute("animation__spin", `property: rotation; to: ${Math.random() * 360} 360 ${Math.random() * 360}; dur: ${d}; loop: true; easing: linear`);
+    g.appendChild(e);
+  }
+}
+
+async function startAR() {
+  if (started) return; started = true;
+  // unlock video playback on iOS with the tap
+  try { vid.muted = false; await vid.play(); vid.pause(); vid.currentTime = 0; } catch (e) { vid.muted = true; }
+  show("start", false); show("load", true);
+  const sys = scene.systems["mindar-image-system"];
+  try { await sys.start(); } catch (e) { show("load", false); show("err", true); }
+}
+$("go").addEventListener("click", startAR);
+
+scene.addEventListener("arReady", () => { show("load", false); show("scan", true); });
+scene.addEventListener("arError", () => { show("load", false); show("err", true); });
+
+const target = $("target");
+target.addEventListener("targetFound", () => {
+  found = true; show("scan", false); $("bar").classList.add("show");
+  pop.removeAttribute("animation__in");
+  pop.setAttribute("animation__in", "property: scale; from: 0.001 0.001 0.001; to: 1 1 1; dur: 700; easing: easeOutBack");
+  vid.play().catch(() => { vid.muted = true; vid.play(); setSoundIcon(); });
+  if (navigator.vibrate) navigator.vibrate(40);
+});
+target.addEventListener("targetLost", () => {
+  found = false; vid.pause(); show("scan", true);
+  pop.setAttribute("scale", "0.001 0.001 0.001");
+});
+
+function setSoundIcon() {
+  $("bSound").querySelector("span").textContent = vid.muted ? "Muted" : "Sound";
+  $("bSound").style.opacity = vid.muted ? .6 : 1;
+}
+$("bSound").addEventListener("click", () => { vid.muted = !vid.muted; setSoundIcon(); });
+$("bReplay").addEventListener("click", () => { vid.currentTime = 0; if (found) vid.play(); });
+
+// fallback: just watch the video
+function openViewer() {
+  const v2 = $("vid2"); v2.src = "assets/video.mp4";
+  show("start", false); show("err", false); show("viewer", true); v2.play().catch(() => {});
+  $("bar").classList.add("show");
+}
+$("noCard").addEventListener("click", openViewer);
+$("noCam").addEventListener("click", openViewer);
+$("closeV").addEventListener("click", () => { $("vid2").pause(); show("viewer", false); $("bar").classList.remove("show"); show("start", true); started = false; });
+}
+</script>
+</body>
+</html>

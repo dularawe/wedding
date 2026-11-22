@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kasun & Nethmi Wedding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500;600&family=Noto+Sans+Sinhala:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: tender, festive, elegant — one lovely object, few hues, lots of air.
+   IDEA: a sealed wedding envelope that opens into a jasmine-and-gold invitation card.
+   PICTURE: a layered SVG arch of jasmine strands, a lotus and a gold oil lamp framing the names.
+   COLOUR and TYPE: jasmine white, deep ruby, temple gold; Cormorant for names, Jost for text, Noto Sinhala.
+   LAYOUT: one centred card hero, then countdown, events, venue, gallery, RSVP, footer in calm bands. */
+:root{color-scheme:light dark;
+--bg:light-dark(#ffffff,#170b10);--card:light-dark(#fffaf7,#22121a);
+--ink:light-dark(#2a1418,#f6ebe6);--soft:light-dark(#6d4c52,#c9b2ae);
+--ruby:light-dark(#8a1538,#e0587d);--ruby-deep:light-dark(#6b0f2b,#3a1222);
+--gold:light-dark(#b88a2e,#e2bd6a);--line:light-dark(#efdcd4,#3a2330)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Jost,"Noto Sans Sinhala",system-ui,sans-serif;overflow-x:clip}
+body.si{font-family:"Noto Sans Sinhala",Jost,sans-serif}
+.band{padding:clamp(40px,6vw,88px) max(5vw,16px)}
+.wrap{max-width:1040px;margin:0 auto}
+h1,h2,.names{font-family:Cormorant,Georgia,serif;font-weight:600;line-height:1.05;text-wrap:balance;margin:0}
+h2{font-size:clamp(32px,5vw,46px);text-align:center;color:var(--ruby)}
+.sub{text-align:center;color:var(--soft);margin:10px auto 36px;max-width:56ch}
+.orn{display:block;margin:14px auto 0;width:120px;height:14px}
+/* nav */
+nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:8px;padding:8px 16px;flex-wrap:wrap}
+.mono{font-family:Cormorant,serif;font-size:24px;font-weight:600;color:var(--ruby);margin-right:auto}
+nav a{color:var(--ink);text-decoration:none;font-size:15px;padding:10px 10px;border-radius:8px}
+nav a:hover{color:var(--ruby)}
+.lang{min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--gold);background:none;color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+@media(max-width:720px){nav .links{display:none}}
+/* envelope */
+#env{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--ruby-deep);transition:opacity .9s,visibility .9s}
+#env.gone{opacity:0;visibility:hidden}
+.envbox{text-align:center;color:#f7e6d0;padding:24px}
+.seal{width:120px;height:120px;margin:0 auto 22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e9c977,#a8781f 70%);display:grid;place-items:center;box-shadow:0 10px 30px #0006,inset 0 -6px 12px #0003;font-family:Cormorant,serif;font-size:40px;color:#5a0d24;font-weight:600}
+.envbox p{margin:0 0 6px;letter-spacing:.02em}
+.envbox .to{font-family:Cormorant,serif;font-size:34px;line-height:1.1;margin-bottom:22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 26px;border-radius:99px;border:0;background:var(--gold);color:#2a1418;font:600 16px Jost,"Noto Sans Sinhala",sans-serif;cursor:pointer;text-decoration:none}
+.btn.ghost{background:none;border:1.5px solid var(--ruby);color:var(--ruby)}
+.btn:focus-visible,.lang:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,nav a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+/* hero */
+.hero{padding:clamp(28px,5vw,64px) 16px clamp(40px,6vw,80px);text-align:center;background:radial-gradient(120% 70% at 50% 0%,color-mix(in srgb,var(--ruby) 10%,var(--bg)),var(--bg))}
+.card{position:relative;max-width:620px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:300px 300px 24px 24px;padding:0 clamp(18px,5vw,48px) 40px;box-shadow:0 30px 60px -30px color-mix(in srgb,var(--ruby) 45%,transparent)}
+.arch{display:block;width:100%;height:auto;margin-top:-1px}
+.pre{color:var(--soft);font-size:15px;margin:4px 0 10px}
+.names{font-size:clamp(46px,10vw,84px);color:var(--ruby);font-style:italic;font-weight:500}
+.amp{display:block;font-size:.5em;color:var(--gold);font-style:normal;margin:4px 0}
+.date{margin:22px 0 4px;font-size:18px;font-weight:500;letter-spacing:.04em}
+.place{color:var(--soft);margin:0 0 26px}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+/* countdown */
+.count{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:620px;margin:0 auto}
+.cell{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 6px;text-align:center}
+.cell b{display:block;font-family:Cormorant,serif;font-size:clamp(34px,7vw,52px);line-height:1;color:var(--ruby);font-variant-numeric:tabular-nums}
+.cell span{font-size:14px;color:var(--soft)}
+/* events */
+.events{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px}
+.ev{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px;display:grid;grid-template-columns:auto 1fr;gap:4px 18px;align-items:start}
+.ev .t{grid-row:span 3;font-family:Cormorant,serif;font-size:34px;line-height:1;color:var(--gold);white-space:nowrap;font-weight:600}
+.ev h3{margin:0;font-size:19px;font-weight:600}
+.ev p{margin:0;color:var(--soft)}
+.ev small{color:var(--ruby);font-weight:500;font-size:14px}
+/* venue */
+.venue{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:26px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:clamp(18px,3vw,32px)}
+.mapart{border-radius:18px;overflow:hidden;aspect-ratio:4/3;background:color-mix(in srgb,var(--gold) 14%,var(--card))}
+.mapart svg{width:100%;height:100%;display:block}
+.venue h3{font-family:Cormorant,serif;font-size:32px;margin:0 0 6px;color:var(--ruby);line-height:1.1}
+.venue p{margin:0 0 18px;color:var(--soft)}
+@media(max-width:700px){.venue{grid-template-columns:1fr}}
+/* gallery */
+.gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.gal figure{margin:0;border-radius:18px;overflow:hidden;aspect-ratio:3/4;position:relative}
+.gal figure:nth-child(2){transform:translateY(24px)}
+.gal svg{width:100%;height:100%;display:block}
+.gal figcaption{position:absolute;left:12px;bottom:10px;color:#fff;font-size:14px;text-shadow:0 1px 6px #0008}
+@media(max-width:600px){.gal{grid-template-columns:repeat(2,minmax(0,1fr))}.gal figure:nth-child(2){transform:none}.gal figure:nth-child(3){grid-column:span 2;aspect-ratio:16/9}}
+/* rsvp */
+.rsvp{max-width:560px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:clamp(20px,4vw,36px)}
+label{display:block;font-weight:500;margin:16px 0 6px;font-size:15px}
+input,select,textarea{width:100%;min-height:48px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:16px Jost,"Noto Sans Sinhala",sans-serif}
+textarea{min-height:90px;resize:vertical}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice input{position:absolute;opacity:0;width:1px;height:1px}
+.choice label{margin:0;min-height:48px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;text-align:center;padding:6px}
+.choice input:checked+label{border-color:var(--ruby);background:color-mix(in srgb,var(--ruby) 10%,transparent);color:var(--ruby)}
+.choice input:focus-visible+label{outline:3px solid var(--gold);outline-offset:2px}
+.rsvp .btn{width:100%;margin-top:22px}
+.err{color:var(--ruby);font-size:14px;min-height:20px;margin:6px 0 0}
+.done{text-align:center;padding:16px 0}
+.done h3{font-family:Cormorant,serif;font-size:34px;color:var(--ruby);margin:0 0 8px}
+.note{text-align:center;font-size:13px;color:var(--soft);margin-top:14px}
+footer{background:var(--ruby-deep);color:#f7e6d0;text-align:center}
+footer .names{font-size:clamp(36px,7vw,56px);color:#f7e6d0}
+footer p{margin:10px 0 0;opacity:.85}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .8s,transform .8s}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}#env{transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<div id="env" role="dialog" aria-label="Invitation envelope">
+  <div class="envbox">
+    <div class="seal">K&N</div>
+    <p data-i="envTo">You are warmly invited</p>
+    <div class="to" id="guestName">Dear Guest</div>
+    <button class="btn" id="openBtn" data-i="open">Open invitation</button>
+  </div>
+</div>
+
+<nav><div class="wrap">
+  <span class="mono">K & N</span>
+  <span class="links">
+    <a href="#events" data-i="nEvents">Events</a>
+    <a href="#venue" data-i="nVenue">Venue</a>
+    <a href="#gallery" data-i="nGallery">Gallery</a>
+    <a href="#rsvp" data-i="nRsvp">RSVP</a>
+  </span>
+  <button class="lang" id="langBtn" aria-label="Switch language">සිංහල</button>
+</div></nav>
+
+<header class="hero">
+  <div class="card reveal">
+    <svg class="arch" viewBox="0 0 600 260" aria-hidden="true">
+      <defs>
+        <linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e9c977"/><stop offset="1" stop-color="#a8781f"/></linearGradient>
+        <radialGradient id="flame" cx=".5" cy=".7" r=".6"><stop offset="0" stop-color="#fff3c4"/><stop offset=".6" stop-color="#f3a93a"/><stop offset="1" stop-color="#d9532b" stop-opacity="0"/></radialGradient>
+        <g id="jas"><circle r="5" fill="#fff" stroke="#e8d9c8" stroke-width="1"/><circle r="1.6" fill="#e9c977"/></g>
+      </defs>
+      <path d="M40 260 V200 A260 200 0 0 1 560 200 V260" fill="none" stroke="url(#g)" stroke-width="3"/>
+      <path d="M62 260 V204 A238 182 0 0 1 538 204 V260" fill="none" stroke="url(#g)" stroke-width="1" opacity=".6"/>
+      <g id="strand"></g>
+      <g transform="translate(300 150)">
+        <ellipse cx="0" cy="60" rx="70" ry="8" fill="#000" opacity=".08"/>
+        <path d="M-46 42 Q0 70 46 42 L34 30 Q0 46 -34 30Z" fill="url(#g)"/>
+        <path d="M-8 30 Q0 -6 8 30" fill="url(#g)"/>
+        <ellipse cx="0" cy="-6" rx="9" ry="22" fill="url(#flame)"><animate attributeName="ry" values="22;25;21;22" dur="2.4s" repeatCount="indefinite"/></ellipse>
+        <g fill="var(--ruby)" opacity=".9">
+          <path d="M-60 40 Q-70 10 -40 0 Q-48 24 -34 40Z"/><path d="M60 40 Q70 10 40 0 Q48 24 34 40Z"/>
+          <path d="M-86 44 Q-104 26 -80 12 Q-80 30 -66 44Z" opacity=".7"/><path d="M86 44 Q104 26 80 12 Q80 30 66 44Z" opacity=".7"/>
+        </g>
+      </g>
+    </svg>
+    <p class="pre" data-i="pre">Together with their families</p>
+    <h1 class="names">Kasun<span class="amp">&</span>Nethmi</h1>
+    <p class="date" data-i="date">Saturday · 20 March 2027 · 9.15 am</p>
+    <p class="place" data-i="place">Grand Lotus Hall, Colombo 03</p>
+    <div class="actions">
+      <a class="btn" href="#rsvp" data-i="rsvpBtn">RSVP now</a>
+      <a class="btn ghost" id="waShare" href="#" target="_blank" rel="noopener" data-i="share">Share on WhatsApp</a>
+    </div>
+  </div>
+</header>
+
+<section class="band" aria-labelledby="cdH">
+  <div class="wrap reveal">
+    <h2 id="cdH" data-i="cdH">Counting down</h2>
+    <svg class="orn" viewBox="0 0 120 14" aria-hidden="true"><path d="M0 7H48M72 7H120" stroke="var(--gold)"/><circle cx="60" cy="7" r="5" fill="none" stroke="var(--gold)"/><circle cx="60" cy="7" r="1.8" fill="var(--gold)"/></svg>
+    <p class="sub" data-i="cdSub">Until we say our vows on the Poruwa</p>
+    <div class="count" id="count"></div>
+  </div>
+</section>
+
+<section class="band" id="events" aria-labelledby="evH" style="padding-top:0">
+  <div class="wrap reveal">
+    <h2 id="evH" data-i="evH">The day</h2>
+    <svg class="orn" viewBox="0 0 120 14" aria-hidden="true"><path d="M0 7H48M72 7H120" stroke="var(--gold)"/><circle cx="60" cy="7" r="5" fill="none" stroke="var(--gold)"/><circle cx="60" cy="7" r="1.8" fill="var(--gold)"/></svg>
+    <p class="sub" data-i="evSub">Please join us for every moment</p>
+    <div class="events" id="evList"></div>
+  </div>
+</section>
+
+<section class="band" id="venue" aria-labelledby="vH" style="padding-top:0">
+  <div class="wrap reveal">
+    <div class="venue">
+      <div class="mapart">
+        <svg viewBox="0 0 400 300" aria-hidden="true">
+          <rect width="400" height="300" fill="color-mix(in srgb,var(--gold) 12%,var(--card))"/>
+          <path d="M0 210 Q120 170 200 200 T400 180 V300 H0Z" fill="color-mix(in srgb,#3a8fb7 28%,var(--card))"/>
+          <g stroke="var(--line)" stroke-width="10" fill="none" stroke-linecap="round"><path d="M-10 90 H410"/><path d="M130 -10 V310"/><path d="M290 -10 Q260 120 310 310"/></g>
+          <g stroke="var(--card)" stroke-width="2" stroke-dasharray="8 8" fill="none"><path d="M-10 90 H410"/><path d="M130 -10 V310"/></g>
+          <circle cx="210" cy="140" r="38" fill="var(--ruby)" opacity=".14"/>
+          <path d="M210 160 C190 130 186 120 186 108 a24 24 0 0 1 48 0 c0 12-4 22-24 52Z" fill="var(--ruby)"/>
+          <circle cx="210" cy="108" r="9" fill="var(--card)"/>
+        </svg>
+      </div>
+      <div>
+        <h3 id="vH">Grand Lotus Hall</h3>
+        <p data-i="addr">No. 12, Galle Road, Colombo 03. Free parking for guests at the rear entrance.</p>
+        <div class="actions" style="justify-content:flex-start">
+          <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Galle+Road+Colombo+03" target="_blank" rel="noopener" data-i="dir">Get directions</a>
+          <a class="btn ghost" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Kasun+%26+Nethmi+Wedding&dates=20270320T034500Z/20270320T113000Z&location=Grand+Lotus+Hall,+Colombo+03" target="_blank" rel="noopener" data-i="cal">Add to calendar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="gallery" aria-labelledby="gH" style="padding-top:0">
+  <div class="wrap reveal">
+    <h2 id="gH" data-i="gH">Our story</h2>
+    <svg class="orn" viewBox="0 0 120 14" aria-hidden="true"><path d="M0 7H48M72 7H120" stroke="var(--gold)"/><circle cx="60" cy="7" r="5" fill="none" stroke="var(--gold)"/><circle cx="60" cy="7" r="1.8" fill="var(--gold)"/></svg>
+    <p class="sub" data-i="gSub">Couple photos go here: pre-shoot, engagement and more</p>
+    <div class="gal" id="gal"></div>
+  </div>
+</section>
+
+<section class="band" id="rsvp" aria-labelledby="rH" style="padding-top:0">
+  <div class="wrap reveal">
+    <h2 id="rH" data-i="rH">Will you join us?</h2>
+    <svg class="orn" viewBox="0 0 120 14" aria-hidden="true"><path d="M0 7H48M72 7H120" stroke="var(--gold)"/><circle cx="60" cy="7" r="5" fill="none" stroke="var(--gold)"/><circle cx="60" cy="7" r="1.8" fill="var(--gold)"/></svg>
+    <p class="sub" data-i="rSub">Kindly reply before 1 March 2027</p>
+    <div class="rsvp" id="rsvpBox">
+      <form id="rsvpForm" novalidate>
+        <label for="fName" data-i="fName">Your name</label>
+        <input id="fName" autocomplete="name">
+        <label for="fPhone" data-i="fPhone">Phone number</label>
+        <input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="07X XXX XXXX">
+        <label data-i="fCome">Attending?</label>
+        <div class="choice">
+          <input type="radio" name="come" id="cY" value="yes" checked><label for="cY" data-i="yes">Joyfully accept</label>
+          <input type="radio" name="come" id="cN" value="no"><label for="cN" data-i="no">Sadly decline</label>
+        </div>
+        <label for="fCount" data-i="fCount">Number of guests</label>
+        <select id="fCount"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select>
+        <label for="fMsg" data-i="fMsg">Wishes for the couple (optional)</label>
+        <textarea id="fMsg"></textarea>
+        <p class="err" id="err" aria-live="polite"></p>
+        <button class="btn" type="submit" data-i="send">Send reply</button>
+      </form>
+    </div>
+    <p class="note" data-i="demo">Sample invitation with example names. In a real order, replies go to the couple's Google Sheet or WhatsApp.</p>
+  </div>
+</section>
+
+<footer class="band">
+  <div class="names">Kasun & Nethmi</div>
+  <p data-i="thanks">With love and gratitude · 20.03.2027</p>
+</footer>
+
+<script>
+{
+const T={
+en:{envTo:"You are warmly invited",open:"Open invitation",nEvents:"Events",nVenue:"Venue",nGallery:"Gallery",nRsvp:"RSVP",pre:"Together with their families",date:"Saturday · 20 March 2027 · 9.15 am",place:"Grand Lotus Hall, Colombo 03",rsvpBtn:"RSVP now",share:"Share on WhatsApp",cdH:"Counting down",cdSub:"Until we say our vows on the Poruwa",evH:"The day",evSub:"Please join us for every moment",addr:"No. 12, Galle Road, Colombo 03. Free parking for guests at the rear entrance.",dir:"Get directions",cal:"Add to calendar",gH:"Our story",gSub:"Couple photos go here: pre-shoot, engagement and more",rH:"Will you join us?",rSub:"Kindly reply before 1 March 2027",fName:"Your name",fPhone:"Phone number",fCome:"Attending?",yes:"Joyfully accept",no:"Sadly decline",fCount:"Number of guests",fMsg:"Wishes for the couple (optional)",send:"Send reply",demo:"Sample invitation with example names. In a real order, replies go to the couple's Google Sheet or WhatsApp.",thanks:"With love and gratitude · 20.03.2027",units:["Days","Hours","Minutes","Seconds"],dear:"Dear Guest",errName:"Please enter your name.",errPhone:"Please enter a valid phone number.",doneY:"Thank you!",doneYt:n=>`We can't wait to celebrate with you, ${n}.`,doneNt:n=>`We'll miss you, ${n}. Thank you for letting us know.`,again:"Edit reply",married:"Just married!",
+ev:[["9.15","Poruwa ceremony","Traditional blessings and vows","Main hall"],["12.30","Wedding lunch","Lunch buffet with family and friends","Lotus ballroom"],["6.30","Evening reception","Dinner, music and dancing","Garden terrace"]],gal:["First meeting","Engagement","Pre-shoot"]},
+si:{envTo:"ඔබට ආදරයෙන් ආරාධනා කරමු",open:"ආරාධනාව විවෘත කරන්න",nEvents:"උත්සව",nVenue:"ස්ථානය",nGallery:"ඡායාරූප",nRsvp:"පිළිතුර",pre:"දෙපාර්ශවයේ පවුල් සමඟ",date:"සෙනසුරාදා · 2027 මාර්තු 20 · පෙ.ව. 9.15",place:"ග්‍රෑන්ඩ් ලෝටස් ශාලාව, කොළඹ 03",rsvpBtn:"පිළිතුරු දෙන්න",share:"WhatsApp හි බෙදාගන්න",cdH:"ඉතිරි කාලය",cdSub:"පෝරුවේ අපගේ මංගල මොහොත දක්වා",evH:"මංගල දිනය",evSub:"සෑම මොහොතකටම අප සමඟ එක්වන්න",addr:"අංක 12, ගාලු පාර, කොළඹ 03. පිටුපස දොරටුවෙන් නොමිලේ වාහන නැවැත්වීමේ පහසුකම.",dir:"මාර්ගය බලන්න",cal:"දින දර්ශනයට එක් කරන්න",gH:"අපේ කතාව",gSub:"යුවළගේ ඡායාරූප මෙහි: පෙර-රූගත කිරීම්, විවාහ ගිවිස ගැනීම",rH:"ඔබ අප සමඟ එක්වනවාද?",rSub:"කරුණාකර 2027 මාර්තු 1 ට පෙර පිළිතුරු දෙන්න",fName:"ඔබගේ නම",fPhone:"දුරකථන අංකය",fCome:"පැමිණෙනවාද?",yes:"සතුටින් පැමිණෙමි",no:"කණගාටුයි, නොපැමිණෙමි",fCount:"අමුත්තන් ගණන",fMsg:"යුවළට සුබ පැතුම් (අත්‍යවශ්‍ය නැත)",send:"පිළිතුර යවන්න",demo:"උදාහරණ නම් සහිත නියැදි ආරාධනාවකි. සැබෑ ඇණවුමක පිළිතුරු යුවළගේ Google Sheet හෝ WhatsApp වෙත යයි.",thanks:"ආදරයෙන් හා කෘතඥතාවයෙන් · 2027.03.20",units:["දින","පැය","මිනිත්තු","තත්පර"],dear:"ගෞරවනීය අමුත්තා",errName:"කරුණාකර ඔබගේ නම ඇතුළත් කරන්න.",errPhone:"කරුණාකර නිවැරදි දුරකථන අංකයක් ඇතුළත් කරන්න.",doneY:"ස්තූතියි!",doneYt:n=>`${n}, ඔබ සමඟ සැමරීමට අපි බලාපොරොත්තු වෙමු.`,doneNt:n=>`${n}, අපට ඔබව මග හැරෙනු ඇත. දැනුම් දීම ගැන ස්තූතියි.`,again:"පිළිතුර වෙනස් කරන්න",married:"විවාහ වූහ!",
+ev:[["9.15","පෝරුව චාරිත්‍ර","සාම්ප්‍රදායික ආශීර්වාද හා පොරොන්දු","ප්‍රධාන ශාලාව"],["12.30","මංගල දිවා භෝජනය","පවුලේ අය හා මිතුරන් සමඟ","ලෝටස් ශාලාව"],["6.30","සවස පිළිගැනීම","රාත්‍රී භෝජනය, සංගීතය හා නැටුම්","උද්‍යාන ටෙරස්"]],gal:["පළමු හමුව","විවාහ ගිවිස ගැනීම","පෙර-රූගත කිරීම"]}
+};
+let lang="en";
+const $=id=>document.getElementById(id);
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const target=new Date("2027-03-20T09:15:00+05:30").getTime();
+let reply=null;try{reply=JSON.parse(store.get("kn_rsvp")||"null")}catch(e){}
+
+const guest=new URLSearchParams(location.search).get("to");
+
+function render(){
+  const t=T[lang];
+  document.documentElement.lang=lang==="si"?"si":"en";
+  document.body.classList.toggle("si",lang==="si");
+  document.querySelectorAll("[data-i]").forEach(el=>{const v=t[el.dataset.i];if(typeof v==="string")el.textContent=v});
+  $("langBtn").textContent=lang==="en"?"සිංහල":"English";
+  $("guestName").textContent=guest||t.dear;
+  $("evList").innerHTML=t.ev.map(e=>`<article class="ev"><span class="t">${e[0]}</span><h3>${e[1]}</h3><p>${e[2]}</p><small>${e[3]}</small></article>`).join("");
+  const tones=[["#8a1538","#e9a3b6"],["#b88a2e","#f3dfa8"],["#3c6e5a","#b9dcc8"]];
+  $("gal").innerHTML=t.gal.map((c,i)=>`<figure><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="p${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${tones[i][1]}"/><stop offset="1" stop-color="${tones[i][0]}"/></linearGradient></defs><rect width="300" height="400" fill="url(#p${i})"/><circle cx="230" cy="90" r="46" fill="#fff" opacity=".35"/><circle cx="120" cy="215" r="34" fill="#fff" opacity=".85"/><path d="M60 400 Q70 270 120 262 Q170 270 180 400Z" fill="#fff" opacity=".85"/><circle cx="190" cy="225" r="30" fill="#fff" opacity=".7"/><path d="M140 400 Q150 285 190 275 Q232 285 240 400Z" fill="#fff" opacity=".7"/></svg><figcaption>${c}</figcaption></figure>`).join("");
+  const msg=encodeURIComponent((lang==="si"?"කසුන් සහ නෙත්මිගේ මංගල ආරාධනාව: ":"You're invited to Kasun & Nethmi's wedding: ")+location.href.split("#")[0]);
+  $("waShare").href="https://wa.me/?text="+msg;
+  tick();renderReply();
+}
+function tick(){
+  const t=T[lang];let d=Math.max(0,target-Date.now());
+  if(d===0){$("count").innerHTML=`<div class="cell" style="grid-column:1/-1"><b>${t.married}</b></div>`;return}
+  const v=[Math.floor(d/864e5),Math.floor(d/36e5)%24,Math.floor(d/6e4)%60,Math.floor(d/1e3)%60];
+  $("count").innerHTML=v.map((n,i)=>`<div class="cell"><b>${String(n).padStart(2,"0")}</b><span>${t.units[i]}</span></div>`).join("");
+}
+function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function renderReply(){
+  const form=$("rsvpForm"),box=$("rsvpBox");let done=box.querySelector(".done");
+  if(!reply){form.hidden=false;if(done)done.remove();return}
+  form.hidden=true;const t=T[lang];
+  if(!done){done=document.createElement("div");done.className="done";box.appendChild(done)}
+  done.innerHTML=`<h3>${t.doneY}</h3><p>${esc(reply.come==="yes"?t.doneYt(reply.name):t.doneNt(reply.name))}</p><button class="btn ghost" type="button" id="editR">${t.again}</button>`;
+  $("editR").onclick=()=>{fill();reply=null;renderReply();$("fName").focus()};
+}
+function fill(){if(!reply)return;$("fName").value=reply.name;$("fPhone").value=reply.phone;$("c"+(reply.come==="yes"?"Y":"N")).checked=true;$("fCount").value=reply.count;$("fMsg").value=reply.msg}
+
+$("rsvpForm").addEventListener("submit",e=>{
+  e.preventDefault();const t=T[lang];
+  const name=$("fName").value.trim(),phone=$("fPhone").value.replace(/[^\d+]/g,"");
+  if(!name){$("err").textContent=t.errName;$("fName").focus();return}
+  if(phone.length<9){$("err").textContent=t.errPhone;$("fPhone").focus();return}
+  $("err").textContent="";
+  reply={name,phone,come:document.querySelector("input[name=come]:checked").value,count:$("fCount").value,msg:$("fMsg").value.trim()};
+  store.set("kn_rsvp",JSON.stringify(reply));renderReply();
+});
+$("langBtn").addEventListener("click",()=>{lang=lang==="en"?"si":"en";store.set("kn_lang",lang);render()});
+$("openBtn").addEventListener("click",()=>{$("env").classList.add("gone");store.set("kn_open","1")});
+$("waShare").addEventListener("click",e=>{if(!navigator.onLine)e.preventDefault()});
+
+// jasmine strand along the arch
+{const g=$("strand");let h="";for(let i=0;i<=34;i++){const a=Math.PI*(1-i/34),x=300+250*Math.cos(a),y=200-190*Math.sin(a);h+=`<use href="#jas" x="${x.toFixed(1)}" y="${y.toFixed(1)}"/>`;
+ if(i%6===3){for(let k=1;k<=4;k++)h+=`<use href="#jas" x="${x.toFixed(1)}" y="${(y+k*11).toFixed(1)}" transform="scale(1)"/>`}}g.innerHTML=h}
+
+const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target)}}),{threshold:.12});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+const saved=store.get("kn_lang");if(saved==="si")lang="si";
+if(store.get("kn_open")==="1")$("env").classList.add("gone");
+render();setInterval(tick,1000);
+}
+</script>
+</body>
+</html>
