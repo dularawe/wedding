@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Admin · Bubbly Invites</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script type="importmap">{"imports":{"three":"./lib/three.module.min.js"}}</script>
+<script src="lib/supabase.js"></script>
+<script type="module" src="lib/model-viewer.min.js"></script>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21C5 16 2 12.5 2 8.5 2 5.5 4.4 3 7.3 3c1.9 0 3.5 1 4.7 2.6C13.2 4 14.8 3 16.7 3 19.6 3 22 5.5 22 8.5c0 4-3 7.5-10 12.5z" fill="#fff"/></svg></span><b id="brandName">Bubbly Invites</b> <span>Admin</span></div>
+  <span class="mode" id="modeBadge"></span>
+  <button class="ghost sm" id="signOut" hidden>Sign out</button>
+</header>
+
+<!-- LOGIN -->
+<main id="vLogin" class="view narrow" hidden>
+  <form class="card login" id="loginForm">
+    <h1>Sign in</h1>
+    <p class="muted" id="loginHint"></p>
+    <label id="emailRow">Email<input id="lEmail" type="email" autocomplete="username"></label>
+    <label><span id="pwLabel">Password</span><input id="lPass" type="password" autocomplete="current-password" required></label>
+    <p class="err" id="lErr" aria-live="polite"></p>
+    <button class="primary" type="submit">Sign in</button>
+  </form>
+</main>
+
+<!-- LIST -->
+<main id="vList" class="view" hidden>
+  <div class="head">
+    <div><h1>Invitations</h1><p class="muted" id="listSub"></p></div>
+    <div class="row"><button class="ghost" id="backupBtn" hidden>Backup</button><button class="primary" id="newBtn">+ New invitation</button></div>
+  </div>
+  <div class="grid" id="invGrid"></div>
+  <div class="empty card" id="emptyState" hidden>
+    <h2>No invitations yet</h2><p class="muted">Create the first one. Choose a template, type the couple's details, then add guests to get their personal links.</p>
+    <button class="primary" id="newBtn2">+ New invitation</button>
+  </div>
+</main>
+
+<!-- EDITOR -->
+<main id="vEdit" class="view" hidden>
+  <div class="head">
+    <div><a href="#list" class="back">← All invitations</a><h1 id="edTitle">New invitation</h1></div>
+    <div class="row"><span class="saved muted" id="savedNote"></span><button class="ghost" id="delInv" hidden>Delete</button><button class="primary" id="saveBtn">Save</button></div>
+  </div>
+  <div class="tabs" role="tablist">
+    <button role="tab" class="tab on" data-tab="details">1. Details</button>
+    <button role="tab" class="tab" data-tab="guests">2. Guests &amp; links</button>
+  </div>
+  <div class="split">
+    <div>
+      <!-- DETAILS -->
+      <section id="tDetails" class="card">
+        <h2>Template</h2>
+        <div class="tpls" id="tplPick"></div>
+        <h2>Couple</h2>
+        <div class="seg" role="radiogroup" aria-label="Couple art">
+          <label><input type="radio" name="artMode" value="drawn" checked> Drawn couple (template)</label>
+          <label><input type="radio" name="artMode" value="custom"> My own couple art</label>
+        </div>
+        <div id="drawnBox" class="two">
+          <label>Groom skin tone<select id="fGroomSkin"><option value="">Default</option></select></label>
+          <label>Bride skin tone<select id="fBrideSkin"><option value="">Default</option></select></label>
+        </div>
+        <div id="customBox" hidden>
+          <p class="muted small">Use PNG (transparent background), SVG or WebP, standing full body, about 1000 px tall. One image with both of them also works: put it in the groom box and leave the bride box empty.</p>
+          <div class="two">
+            <div class="artpick"><span class="lbl">Groom (or couple)</span><div class="artprev" id="pvG"></div><input id="fArtG" placeholder="custom/groom.png or https://…" aria-label="Groom image link"><label class="ghost sm btnlike file">Upload<input type="file" id="upG" accept="image/png,image/svg+xml,image/webp,image/jpeg" hidden></label></div>
+            <div class="artpick"><span class="lbl">Bride</span><div class="artprev" id="pvB"></div><input id="fArtB" placeholder="custom/bride.png or https://…" aria-label="Bride image link"><label class="ghost sm btnlike file">Upload<input type="file" id="upB" accept="image/png,image/svg+xml,image/webp,image/jpeg" hidden></label></div>
+          </div>
+          <p class="note" id="artNote" hidden></p>
+        </div>
+        <label style="margin-top:14px" id="styleRow">Look<select id="fStyle"><option value="2d">2D cartoon</option><option value="3d">3D figures (first 5 themes only)</option></select></label>
+        <h2>Names &amp; date</h2>
+        <div class="two">
+          <label>Groom's name<input id="fGroom" maxlength="30" placeholder="e.g. Dulara"></label>
+          <label>Bride's name<input id="fBride" maxlength="30" placeholder="e.g. Anjaana"></label>
+        </div>
+        <div class="two">
+          <label>Wedding date<input id="fDate" type="date"></label>
+          <label>Language of the invitation<select id="fLang"><option value="en">English</option><option value="si">සිංහල (Sinhala)</option><option value="ta">தமிழ் (Tamil)</option><option value="hi">हिन्दी (Hindi)</option><option value="zh">中文 (Chinese)</option><option value="ko">한국어 (Korean)</option><option value="es">Español (Spanish)</option><option value="fr">Français (French)</option></select></label>
+        </div>
+        <h2>Programme <span class="muted small">(the first one is said in AR)</span></h2>
+        <div id="evRows"></div>
+        <button class="ghost sm" id="addEv" type="button">+ Add event</button>
+        <h2>Venue</h2>
+        <div class="two">
+          <label>Venue name<input id="fVenue" maxlength="50" placeholder="e.g. Grand Lotus Hall"></label>
+          <label>Address / area<input id="fAddress" maxlength="70" placeholder="e.g. Galle Road, Colombo 03"></label>
+        </div>
+        <label>Google Maps link<input id="fMap" type="url" placeholder="https://maps.app.goo.gl/…"></label>
+        <h2>Replies</h2>
+        <div class="two">
+          <label>Couple's WhatsApp number<input id="fWa" inputmode="tel" placeholder="94771234567"></label>
+          <label>Reply by (date)<input id="fRsvpBy" type="date"></label>
+        </div>
+        <label>Personal message on the invitation (optional)<textarea id="fMsg" maxlength="300" rows="2" placeholder="With the blessings of our parents…"></textarea></label>
+        <h2>Package</h2>
+        <div class="two">
+          <label>Package bought<select id="fPlan"></select></label>
+          <label class="check"><input type="checkbox" id="fHideBrand"> Hide our branding on the invitation</label>
+        </div>
+        <label>WhatsApp message sent with each link<textarea id="fShare" rows="3"></textarea></label>
+        <p class="muted small">Use {name}, {groom}, {bride}, {date} and {link}. They are filled in for each guest.</p>
+      </section>
+
+      <!-- GUESTS -->
+      <section id="tGuests" class="card" hidden>
+        <div class="stats" id="stats"></div>
+        <div class="usage" id="usage"></div>
+        <div class="pub">
+          <div><b>General link</b><p class="muted small">Share in groups. Guests type their own name when they reply.</p></div>
+          <div class="row"><button class="ghost sm" id="copyPub">Copy link</button><a class="ghost sm btnlike" id="openPub" target="_blank" rel="noopener">Open</a></div>
+        </div>
+        <h2>Add guests</h2>
+        <p class="muted small">One per line. Add a phone number after a comma to send by WhatsApp in one tap: <code>Nimal Perera, 0771234567</code></p>
+        <textarea id="gBulk" rows="4" placeholder="Nimal Perera, 0771234567&#10;Kamala Aunty&#10;Suresh & family, 0719876543"></textarea>
+        <div class="row wrap"><label class="inline">Seats each <select id="gSeats"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label><button class="primary" id="gAdd">Add guests</button></div>
+        <div class="row wrap tablehead"><h2>Guest list</h2><input id="gSearch" type="search" placeholder="Search guests"><button class="ghost sm" id="gCsv">Download CSV</button></div>
+        <div class="scroll"><table class="gt"><thead><tr><th>Name</th><th>Seats</th><th id="thStatus">Status</th><th>Send</th><th></th></tr></thead><tbody id="gRows"></tbody></table></div>
+        <p class="muted small" id="gEmpty">No guests yet.</p>
+      </section>
+    </div>
+
+    <!-- PREVIEW -->
+    <aside class="card preview">
+      <div class="row"><h2>Live AR preview</h2><button class="ghost sm" id="refresh">Refresh</button></div>
+      <div class="mvwrap"><model-viewer id="mv" camera-controls disable-zoom autoplay tone-mapping="none" camera-orbit="0deg 84deg 4.9m" camera-target="0m 0.98m 0m" field-of-view="38deg" min-camera-orbit="-35deg 60deg auto" max-camera-orbit="35deg 95deg auto" interaction-prompt="none" shadow-intensity="0.6"></model-viewer>
+        <div class="busy" id="busy">Building…</div></div>
+      <label class="inline small">Preview as guest <input id="pvGuest" value="Nimal" maxlength="30"></label>
+      <a class="ghost btnlike block" id="openGuest" target="_blank" rel="noopener">Open guest page ↗</a>
+    </aside>
+  </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<dialog id="dlg"><form method="dialog"><p id="dlgText"></p><div class="row end"><button class="ghost" value="no">Cancel</button><button class="danger" value="yes">Delete</button></div></form></dialog>
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>

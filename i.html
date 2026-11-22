@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>You're invited! · Bubbly Invites</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:title" content="You're invited to our wedding!">
+<meta property="og:description" content="Tap to open your invitation and see the couple in your room with AR.">
+<meta property="og:image" content="https://www.bubblyinvites.com/img/og-invite.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="Bubbly Invites">
+<meta name="twitter:card" content="summary_large_image">
+<script type="importmap">{"imports":{"three":"./lib/three.module.min.js"}}</script>
+<script src="lib/supabase.js"></script>
+<script type="module" src="lib/model-viewer.min.js"></script>
+<style>
+@font-face{font-family:Jost;font-weight:400;src:url(fonts/jost-400.woff2)}
+@font-face{font-family:Jost;font-weight:500;src:url(fonts/jost-500.woff2)}
+@font-face{font-family:Jost;font-weight:600;src:url(fonts/jost-600.woff2)}
+@font-face{font-family:"Great Vibes";src:url(fonts/greatvibes.woff2)}
+@font-face{font-family:"Noto Sans Sinhala";font-weight:400;src:url(fonts/sinhala-400.woff2)}
+@font-face{font-family:"Noto Sans Sinhala";font-weight:600;src:url(fonts/sinhala-600.woff2)}
+@font-face{font-family:"Noto Sans Tamil";font-weight:400;src:url(fonts/tamil-400.woff2)}
+@font-face{font-family:"Noto Sans Tamil";font-weight:600;src:url(fonts/tamil-600.woff2)}
+:root{--surface:#fff;--bg:#fff4e0;--ink:#3b1d14;--accent:#8a1538;--accent2:#d9a227;--card:#fffaf2;--rib:#8a1538;--ribt:#f6d77a}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Jost,"Noto Sans Sinhala","Noto Sans Tamil","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Apple SD Gothic Neo","Malgun Gothic","Noto Sans Devanagari",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:560px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 16px calc(32px + env(safe-area-inset-bottom))}
+.script{font-family:"Great Vibes","Noto Sans Sinhala","Noto Sans Tamil","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Apple SD Gothic Neo","Malgun Gothic","Noto Sans Devanagari",system-ui,sans-serif;font-weight:400}
+.hidden{display:none!important}
+/* full-screen layers */
+.layer{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+#loading{background:var(--bg)}
+.spin{width:46px;height:46px;border-radius:50%;border:4px solid color-mix(in srgb,var(--accent) 20%,transparent);border-top-color:var(--accent);animation:r 1s linear infinite;margin-bottom:14px}
+@keyframes r{to{transform:rotate(360deg)}}
+#env{background:radial-gradient(120% 80% at 50% 30%,color-mix(in srgb,var(--rib) 80%,#fff),var(--rib));color:#fff;transition:opacity .7s,visibility .7s}
+#env.gone{opacity:0;visibility:hidden}
+.seal{width:110px;height:110px;border-radius:50%;display:grid;place-items:center;margin-bottom:22px;background:radial-gradient(circle at 35% 30%,#f9e3a3,#b8862a 70%);box-shadow:0 12px 30px #0006,inset 0 -5px 10px #0003;color:#4a1420;font:600 30px Jost;animation:f 3s ease-in-out infinite}
+@keyframes f{50%{transform:translateY(-8px)}}
+#env .dear{font-size:17px;opacity:.9;margin:0}
+#env .who{font-size:clamp(40px,12vw,60px);line-height:1.1;margin:6px 0 4px}
+#env .to{margin:0 0 28px;opacity:.85}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 26px;border-radius:99px;border:0;background:#fff;color:var(--rib);font:600 17px Jost,"Noto Sans Sinhala","Noto Sans Tamil","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Apple SD Gothic Neo","Malgun Gothic","Noto Sans Devanagari",system-ui,sans-serif;cursor:pointer;text-decoration:none;box-shadow:0 8px 20px #0003}
+/* header */
+header{text-align:center;padding-top:6px}
+header small{display:block;color:var(--accent);font-weight:500}
+h1{font-size:clamp(46px,13vw,64px);line-height:1.05;margin:4px 0 2px;color:var(--ink);text-wrap:balance}
+.dline{margin:0;font-weight:500;letter-spacing:.04em}
+/* stage */
+.stage{position:relative;margin:16px -4px 0;border:3px solid var(--ink);border-radius:28px;overflow:hidden;background:linear-gradient(var(--surface),var(--card));box-shadow:6px 6px 0 var(--ink)}
+model-viewer{width:100%;height:min(64vh,540px);background:transparent;--progress-bar-color:var(--accent)}
+.arbtn{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;min-height:54px;padding:0 22px;border-radius:99px;border:3px solid var(--ink);background:var(--accent);color:#fff;font:600 16px Jost,"Noto Sans Sinhala","Noto Sans Tamil","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Apple SD Gothic Neo","Malgun Gothic","Noto Sans Devanagari",system-ui,sans-serif;white-space:nowrap;box-shadow:3px 3px 0 var(--ink);cursor:pointer;animation:n 2.4s ease-in-out infinite;max-width:calc(100% - 24px)}
+.arbtn svg{width:22px;height:22px;flex:none}
+@keyframes n{50%{transform:translate(-50%,-4px)}}
+.drag{position:absolute;top:10px;left:0;right:0;text-align:center;font-size:13px;opacity:.7;pointer-events:none}
+.noar{position:absolute;left:12px;right:12px;bottom:12px;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:10px 12px;font-size:14px;text-align:center}
+.hint{text-align:center;font-size:14px;opacity:.8;margin:12px 0 0}
+/* sections */
+.sec{margin-top:18px;background:var(--card);border:2.5px solid var(--ink);border-radius:22px;padding:18px}
+.sec h2{margin:0 0 10px;font-size:20px;color:var(--accent)}
+.count{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+.count div{background:var(--card);border:2.5px solid var(--ink);border-radius:18px;padding:12px;text-align:center}
+.count b{display:block;font-size:30px;line-height:1.1;color:var(--accent);font-variant-numeric:tabular-nums}
+.count span{font-size:13px;opacity:.75}
+.msg{text-align:center;font-style:italic;margin:18px 6px 0;font-size:17px}
+.evl{list-style:none;margin:0;padding:0}
+.evl li{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:8px 0;border-top:1px dashed color-mix(in srgb,var(--ink) 25%,transparent)}
+.evl li:first-child{border-top:0}
+.evl b{color:var(--accent);white-space:nowrap}
+.venue{display:flex;gap:12px;align-items:center}
+.venue svg{flex:none;width:40px;height:40px}
+.venue p{margin:0}.venue strong{display:block;font-size:18px}
+.acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+.acts a{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border-radius:16px;border:2.5px solid var(--ink);background:var(--surface);color:var(--ink);text-decoration:none;font-weight:600;box-shadow:3px 3px 0 var(--ink)}
+.acts a.main{background:var(--ink);color:var(--card)}
+.acts svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.acts a:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+label{display:block;font-weight:500;margin:12px 0 6px;font-size:15px}
+input,select,textarea{width:100%;min-height:48px;padding:10px 14px;border-radius:12px;border:2px solid color-mix(in srgb,var(--ink) 30%,transparent);background:var(--surface);color:var(--ink);font:16px Jost,"Noto Sans Sinhala","Noto Sans Tamil","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Apple SD Gothic Neo","Malgun Gothic","Noto Sans Devanagari",system-ui,sans-serif}
+textarea{min-height:84px;resize:vertical}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice input{position:absolute;opacity:0;width:1px;height:1px}
+.choice label{margin:0;min-height:52px;display:flex;align-items:center;justify-content:center;text-align:center;border:2.5px solid color-mix(in srgb,var(--ink) 30%,transparent);border-radius:14px;cursor:pointer;padding:6px}
+.choice input:checked+label{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--surface));color:var(--accent)}
+.send{width:100%;margin-top:16px;min-height:52px;border:0;border-radius:14px;background:var(--accent);color:#fff;font:600 17px Jost,"Noto Sans Sinhala","Noto Sans Tamil","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Apple SD Gothic Neo","Malgun Gothic","Noto Sans Devanagari",system-ui,sans-serif;cursor:pointer}
+.err{color:#b4423a;min-height:20px;font-size:14px;margin:8px 0 0}
+.done{text-align:center}.done h3{margin:0 0 6px;font-size:22px;color:var(--accent)}
+.linkbtn{background:none;border:0;color:var(--accent);font:500 15px Jost,sans-serif;text-decoration:underline;cursor:pointer;min-height:44px}
+footer{text-align:center;font-size:13px;opacity:.7;margin-top:24px}
+footer a{color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+.dark{--surface:#141c3d}.dark .send{color:#16204a}.dark .arbtn{color:#16204a}.dark #env .btn{color:#16204a;background:var(--accent)}
+@media(prefers-reduced-motion:reduce){.seal,.arbtn,.spin{animation:none}#env{transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div id="loading" class="layer"><div class="spin"></div><div id="loadTxt">Preparing your invitation…</div></div>
+
+<div id="env" class="layer hidden">
+  <div class="seal" id="seal"></div>
+  <p class="dear" id="eDear"></p>
+  <div class="who script" id="eNames"></div>
+  <p class="to" id="eTo"></p>
+  <button class="btn" id="openBtn"></button>
+</div>
+
+<main class="wrap hidden" id="main">
+  <header><small id="hInv"></small><h1 class="script" id="hNames"></h1><p class="dline" id="hDate"></p></header>
+  <section class="stage">
+    <model-viewer id="mv" alt="Animated couple introducing the wedding" autoplay camera-controls disable-zoom touch-action="pan-y"
+      camera-orbit="0deg 84deg 4.9m" camera-target="0m 0.98m 0m" field-of-view="38deg" min-camera-orbit="-35deg 60deg auto" max-camera-orbit="35deg 95deg auto"
+      tone-mapping="none" shadow-intensity="0.8" interaction-prompt="none"
+      ar ar-modes="webxr quick-look" ar-scale="auto" ar-placement="floor">
+      <button slot="ar-button" class="arbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg><span id="arTxt"></span></button>
+    </model-viewer>
+    <div class="drag" id="dragTxt"></div>
+    <div class="noar hidden" id="noar"></div>
+  </section>
+  <p class="hint" id="hint"></p>
+  <div class="count" id="count"></div>
+  <p class="msg hidden" id="msg"></p>
+  <section class="sec hidden" id="evSec"><h2 id="evH"></h2><ul class="evl" id="evList"></ul></section>
+  <section class="sec venue hidden" id="vSec">
+    <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 22s-7-6.3-7-12a7 7 0 0 1 14 0c0 5.7-7 12-7 12z" fill="var(--accent)" stroke="var(--ink)"/><circle cx="12" cy="10" r="2.6" fill="#fff" stroke="var(--ink)"/></svg>
+    <p><strong id="vName"></strong><span id="vAddr"></span></p>
+  </section>
+  <nav class="acts" id="acts"></nav>
+  <section class="sec" id="rsvp">
+    <h2 id="rH"></h2><p id="rBy" class="hidden" style="margin:-4px 0 6px;opacity:.75"></p>
+    <form id="rForm" novalidate>
+      <label for="rName" id="lName"></label><input id="rName" autocomplete="name" maxlength="60">
+      <div class="choice" style="margin-top:14px"><input type="radio" name="c" id="cY" value="yes" checked><label for="cY" id="lYes"></label><input type="radio" name="c" id="cN" value="no"><label for="cN" id="lNo"></label></div>
+      <div id="cntRow"><label for="rCount" id="lCount"></label><select id="rCount"></select></div>
+      <label for="rMsg" id="lMsg"></label><textarea id="rMsg" maxlength="400"></textarea>
+      <p class="err" id="rErr" aria-live="polite"></p>
+      <button class="send" type="submit" id="rSend"></button>
+    </form>
+    <div class="done hidden" id="rDone"><h3 id="dH"></h3><p id="dP"></p><button class="linkbtn" id="rEdit" type="button"></button></div>
+  </section>
+  <footer id="foot"></footer>
+</main>
+<script type="module" src="js/guest.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /i.html
+Disallow: /custom/
+
+Sitemap: https://www.bubblyinvites.com/sitemap.xml
